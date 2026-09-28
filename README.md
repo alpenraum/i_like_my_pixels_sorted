@@ -68,4 +68,4 @@ Follows the cross-app CI in `~/agent-skills/conventions/design.md`; the app's pa
 are in [docs/conventions.md](docs/conventions.md). JetBrains Mono is bundled in `public/fonts/` under the SIL
 Open Font License 1.1 ([OFL.txt](public/fonts/OFL.txt)).
 
-By [barely-engineered.org](https://barely-engineered.org) · [GitHub](https://github.com/alpenraum)
+By [barely-engineered.org](https://barely-engineered.org) · [GitHub](https://github.com/alpenraum) - This has been designed and engineered by a human, but written by AI.
