@@ -4,7 +4,10 @@
     "build": "deno check && deno run --allow-read --allow-write=dist --allow-run --allow-env tools/build.ts",
     "check": "deno check && deno lint",
     "icons": "deno run --allow-write=public/icons tools/icons.ts",
-    "lint": "deno lint"
+    "lint": "deno lint",
+    "deploy:check": "deno run --allow-read tools/free-tier.ts",
+    "deploy": "deno task ci && npx wrangler deploy",
+    "ci": "deno install && deno task build && deno task deploy:check"
   },
   "compilerOptions": {
     "lib": [

@@ -14,7 +14,14 @@ deno task check   # type-check + lint
 deno task build   # static site in dist/
 ```
 
-Deploy by uploading `dist/` to any static host.
+Deployed to <https://pixelsorter.barely-engineered.org> by Cloudflare Workers Builds on every push to `main`:
+
+- Build command: `npx --yes deno@2.9.6 task ci` (install, build, free-tier guard)
+- Deploy command: `npx wrangler deploy`
+
+`wrangler.jsonc` is an assets-only Worker: no script ever runs, so every request is a free, unlimited
+static-asset request. `tools/free-tier.ts` fails the build if that ever changes. `dist/` also works on any
+other static host.
 
 ## Pipeline
 

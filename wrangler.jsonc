@@ -1,0 +1,12 @@
+{
+  "name": "pixel-sorter",
+  "compatibility_date": "2026-09-28",
+  // Assets only, on purpose: with no "main" and no "run_worker_first", no Worker script ever runs, so
+  // every request is a static-asset request — free and unlimited on the Free plan. tools/free-tier.ts
+  // refuses to deploy if either key appears.
+  "assets": {
+    "directory": "./dist"
+  },
+  "routes": [{ "pattern": "pixelsorter.barely-engineered.org", "custom_domain": true }],
+  "workers_dev": false
+}
