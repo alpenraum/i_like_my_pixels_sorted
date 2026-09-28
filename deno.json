@@ -1,0 +1,44 @@
+{
+  "tasks": {
+    "dev": "deno run --allow-read --allow-write=dist --allow-run --allow-net --allow-env tools/build.ts --dev",
+    "build": "deno check && deno run --allow-read --allow-write=dist --allow-run --allow-env tools/build.ts",
+    "check": "deno check && deno lint",
+    "icons": "deno run --allow-write=public/icons tools/icons.ts",
+    "lint": "deno lint"
+  },
+  "compilerOptions": {
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext",
+      "deno.ns"
+    ],
+    "strict": true,
+    "jsx": "react-jsx",
+    "jsxImportSource": "preact"
+  },
+  "imports": {
+    "@std/fs": "jsr:@std/fs@^1.0.24",
+    "@std/http": "jsr:@std/http@^1.1.4",
+    "@std/path": "jsr:@std/path@^1.1.6",
+    "libraw-wasm": "npm:libraw-wasm@^1.6.0",
+    "preact": "npm:preact@^10.29.8",
+    "utif2": "npm:utif2@^4.1.0"
+  },
+  "exclude": [
+    "dist"
+  ],
+  "fmt": {
+    "lineWidth": 110,
+    "singleQuote": true
+  },
+  "lint": {
+    "rules": {
+      "tags": [
+        "recommended",
+        "react",
+        "jsx"
+      ]
+    }
+  }
+}

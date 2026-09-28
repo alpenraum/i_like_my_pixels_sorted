@@ -1,0 +1,959 @@
+/* Tokens: docs/conventions.md (palette) and ~/agent-skills/conventions/design.md (everything else). */
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('fonts/JetBrainsMono.ttf') format('truetype');
+  font-weight: 100 800;
+  font-display: swap;
+}
+
+/* Registered so the neon glow can fade and pulse. */
+@property --glow {
+  syntax: '<number>';
+  inherits: false;
+  initial-value: 0;
+}
+
+:root {
+  color-scheme: light;
+
+  --page: #fdf8f8;
+  --surface: #ffffff;
+  --surface-raised: #f7f3f2;
+  --surface-overlay: #ebe7e7;
+  --surface-track: #e5e2e1;
+  --border: #747878;
+  --border-subtle: #c4c7c7;
+  --text: #1c1b1b;
+  --text-muted: #444748;
+
+  --primary: #e98c5d;
+  --primary-rgb: 233 140 93;
+  --on-primary: #0a0a0a;
+  --primary-text: #98471c;
+  --primary-container: #ffe3d6;
+  --primary-on-container: #7b2f04;
+
+  --warn: #f4dc4d;
+  --on-warn: #0a0a0a;
+  --warn-text: #6a5f00;
+  --warn-container: #f6e8b8;
+  --warn-on-container: #504702;
+
+  --cancel: #919191;
+  --on-cancel: #0a0a0a;
+  --cancel-text: #5e5e5e;
+  --cancel-container: #e8e8e8;
+  --cancel-on-container: #474747;
+
+  --error: #e9334c;
+  --on-error: #0a0a0a;
+  --error-text: #bd0734;
+  --error-container: #ffe2e0;
+  --error-on-container: #920025;
+
+  --mono: 'JetBrains Mono', ui-monospace, monospace;
+  --sans: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+
+  --radius: 0;
+  --pill: 0;
+  --min: 48px;
+  --motion: 250ms cubic-bezier(0.2, 0, 0, 1);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--page);
+  color: var(--text);
+  font: 400 14px/20px var(--sans);
+  letter-spacing: 0.25px;
+}
+
+#app {
+  display: grid;
+  grid-template-columns: 340px minmax(0, 1fr);
+  height: 100dvh;
+}
+
+button,
+select,
+input {
+  font: inherit;
+  color: inherit;
+  letter-spacing: inherit;
+}
+
+button {
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: default;
+}
+
+:focus-visible {
+  outline: 2px solid var(--primary-text);
+  outline-offset: 2px;
+}
+
+.hint {
+  margin: 0;
+  font: 400 12px/16px var(--sans);
+  letter-spacing: 0.4px;
+  color: var(--text-muted);
+}
+
+/* Neon glow — design.md geometry: rings at 3.4 / 6.6 / 12 px, 25 / 15 / 8 %, 1.5 px core at 80 %. */
+
+.glowable {
+  --glow: 0;
+  transition: --glow 400ms;
+  box-shadow:
+    0 0 0 3.4px rgb(var(--primary-rgb) / calc(0.25 * var(--glow))),
+    0 0 0 6.6px rgb(var(--primary-rgb) / calc(0.15 * var(--glow))),
+    0 0 0 12px rgb(var(--primary-rgb) / calc(0.08 * var(--glow)));
+  outline: 1.5px solid rgb(var(--primary-rgb) / calc(0.8 * var(--glow)));
+  outline-offset: -1.5px;
+}
+
+.glowable.glowing {
+  --glow: 1;
+  animation: glow-pulse 1200ms ease-in-out infinite alternate;
+}
+
+@keyframes glow-pulse {
+  from {
+    --glow: 0.85;
+  }
+  to {
+    --glow: 1;
+  }
+}
+
+/* Buttons */
+
+.btn {
+  min-height: var(--min);
+  padding: 0 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  font: 600 14px/20px var(--sans);
+  letter-spacing: 0.1px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.btn.filled {
+  background: var(--primary);
+  color: var(--on-primary);
+}
+
+.btn.filled:disabled {
+  background: color-mix(in srgb, var(--primary) 12%, transparent);
+  color: color-mix(in srgb, var(--on-primary) 38%, transparent);
+}
+
+.btn.outline {
+  border-color: var(--primary-text);
+  color: var(--primary-text);
+}
+
+.btn.outline:hover:not(:disabled),
+.btn.outline[aria-pressed='true'] {
+  background: var(--primary-container);
+}
+
+.btn.outline:disabled {
+  border-color: color-mix(in srgb, var(--primary-text) 38%, transparent);
+  color: color-mix(in srgb, var(--primary-text) 38%, transparent);
+}
+
+.btn.text {
+  padding: 0 8px;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  color: var(--primary-text);
+}
+
+.btn.text.cancel {
+  color: var(--cancel-text);
+}
+
+.btn.text:disabled {
+  opacity: 0.38;
+}
+
+/* Fields */
+
+select {
+  width: 100%;
+  min-height: var(--min);
+  padding: 0 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: transparent;
+  font: 400 14px/20px var(--sans);
+}
+
+select:focus-visible {
+  outline: none;
+  border-color: var(--primary-text);
+}
+
+input[type='range'] {
+  width: 100%;
+  height: var(--min);
+  margin: 0;
+  accent-color: var(--primary-text);
+}
+
+.check {
+  min-height: var(--min);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+}
+
+.check input,
+.toggle input {
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  accent-color: var(--primary-text);
+}
+
+.check:has(input:disabled) {
+  opacity: 0.38;
+}
+
+/* Wordmark — the one glitch (docs/conventions.md, expressive layer). */
+
+.glitch {
+  margin: 0;
+  font: 800 45px/52px var(--mono);
+  letter-spacing: -1px;
+  text-transform: uppercase;
+}
+
+.glitch span {
+  position: relative;
+  display: block;
+  width: max-content;
+}
+
+.glitch span::before,
+.glitch span::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  background: var(--page);
+  clip-path: inset(100% 0 0 0);
+  animation: glitch 5.2s steps(1, end) infinite;
+}
+
+.glitch span::before {
+  color: var(--primary);
+}
+
+.glitch span::after {
+  color: var(--text);
+  animation-duration: 7.3s;
+  animation-delay: -1.1s;
+}
+
+.glitch span:last-child::before {
+  animation-delay: -2.6s;
+}
+
+@keyframes glitch {
+  0%,
+  90%,
+  100% {
+    clip-path: inset(100% 0 0 0);
+    transform: none;
+  }
+  91% {
+    clip-path: inset(18% 0 58% 0);
+    transform: translateX(-5px);
+  }
+  93% {
+    clip-path: inset(62% 0 12% 0);
+    transform: translateX(4px);
+  }
+  95% {
+    clip-path: inset(38% 0 44% 0);
+    transform: translateX(-2px);
+  }
+  97% {
+    clip-path: inset(8% 0 82% 0);
+    transform: translateX(6px);
+  }
+}
+
+/* Panel */
+
+.panel {
+  background: var(--page);
+  border-right: 1px solid var(--border-subtle);
+  padding: 24px 16px 16px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.status {
+  margin: auto 0 0;
+  min-height: 20px;
+  font: 400 12px/16px var(--mono);
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.status:not(:empty)::before {
+  content: '> ';
+  color: var(--primary-text);
+}
+
+.status.busy::after {
+  content: '';
+  display: inline-block;
+  width: 0.6em;
+  height: 1.1em;
+  margin-left: 4px;
+  vertical-align: -0.2em;
+  background: var(--primary);
+  animation: caret 1s steps(1, end) infinite;
+}
+
+@keyframes caret {
+  50% {
+    opacity: 0;
+  }
+}
+
+.status.error {
+  padding: 8px;
+  border: 1px solid var(--error-text);
+  border-radius: var(--radius);
+  background: var(--error-container);
+  color: var(--error-on-container);
+  font: 400 16px/24px var(--sans);
+}
+
+.status.error::before {
+  content: none;
+}
+
+/* Pipeline */
+
+.pipeline {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.node {
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.node.selected {
+  border-color: var(--primary-text);
+}
+
+.node.disabled .node-head {
+  opacity: 0.38;
+}
+
+.node-head {
+  min-height: var(--min);
+  display: flex;
+  align-items: center;
+  padding-left: 4px;
+}
+
+.node-head.static {
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 8px 16px;
+}
+
+.node-select {
+  flex: 1;
+  min-width: 0;
+  min-height: var(--min);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 4px 12px;
+  text-align: left;
+  border-radius: var(--radius);
+}
+
+.node-title {
+  font: 500 14px/20px var(--mono);
+  letter-spacing: 0.1px;
+  text-transform: uppercase;
+}
+
+.node-summary {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font: 400 12px/16px var(--mono);
+  color: var(--text-muted);
+}
+
+.toggle,
+.node-remove {
+  flex: none;
+  width: var(--min);
+  height: var(--min);
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+
+.node-remove {
+  font-size: 20px;
+  color: var(--text-muted);
+}
+
+.node-remove:hover {
+  color: var(--error-text);
+}
+
+.node-body {
+  border-top: 1px solid var(--border-subtle);
+  padding: 16px;
+}
+
+.node > .slot {
+  padding: 0 16px 16px;
+}
+
+.link {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  isolation: isolate;
+}
+
+.link::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  border-left: 1px solid var(--border-subtle);
+}
+
+.insert {
+  position: relative;
+  width: var(--min);
+  height: var(--min);
+  display: grid;
+  place-items: center;
+  color: var(--text-muted);
+  font: 400 16px/1 var(--mono);
+}
+
+.insert::before {
+  content: '';
+  position: absolute;
+  inset: 12px;
+  z-index: -1;
+  border: 1px solid var(--border);
+  border-radius: var(--pill);
+  background: var(--surface);
+}
+
+.insert:hover {
+  color: var(--primary-text);
+}
+
+.insert:hover::before {
+  border-color: var(--primary-text);
+}
+
+/* Image slots */
+
+.slot {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: flex-start;
+}
+
+.drop {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  min-height: var(--min);
+  padding: 8px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+  background: var(--surface-raised);
+  text-align: center;
+}
+
+.drop:hover {
+  border-color: var(--primary-text);
+}
+
+.drop.dragging {
+  border-style: solid;
+  border-color: var(--primary-text);
+  background: var(--primary-container);
+}
+
+.drop img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.drop-label {
+  font: 500 14px/20px var(--mono);
+  text-transform: uppercase;
+}
+
+.drop-hint {
+  font: 400 12px/16px var(--sans);
+  color: var(--text-muted);
+}
+
+.filled .drop {
+  border-style: solid;
+}
+
+.filled .drop-label {
+  position: absolute;
+  left: 8px;
+  bottom: 8px;
+  padding: 2px 10px;
+  border-radius: var(--pill);
+  background: var(--text);
+  color: var(--surface);
+  font: 500 11px/16px var(--mono);
+}
+
+/* Step controls */
+
+.controls {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+fieldset {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+legend {
+  padding: 0;
+  margin-bottom: 8px;
+  font: 400 12px/16px var(--sans);
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.segmented {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(var(--count), minmax(0, 1fr));
+  border-radius: var(--pill);
+  background: var(--surface-track);
+  isolation: isolate;
+}
+
+.segmented::before {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  z-index: -1;
+  width: calc(100% / var(--count));
+  border-radius: var(--pill);
+  background: var(--primary);
+  transform: translateX(calc(var(--index) * 100%));
+  transition: transform var(--motion);
+}
+
+.segmented[data-none]::before {
+  opacity: 0;
+}
+
+.segmented button {
+  min-height: var(--min);
+  padding: 12px 4px;
+  border-radius: var(--pill);
+  color: var(--text);
+  transition: color var(--motion);
+}
+
+.segmented button[aria-pressed='true'] {
+  color: var(--on-primary);
+}
+
+.range {
+  display: grid;
+  grid-template-columns: 56px 1fr 52px;
+  align-items: center;
+  gap: 8px;
+}
+
+.range output {
+  text-align: right;
+  font: 400 12px/16px var(--mono);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-muted);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.color-pick {
+  display: flex;
+  gap: 8px;
+}
+
+.color-pick input[type='color'] {
+  flex: none;
+  width: var(--min);
+  height: var(--min);
+  padding: 4px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: transparent;
+}
+
+.color-pick .btn {
+  flex: 1;
+}
+
+/* Stage */
+
+.stage {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 0;
+  padding: 24px 24px 88px;
+  overflow: hidden;
+  background: var(--surface-track);
+}
+
+.stage.dragging {
+  outline: 1px solid var(--primary-text);
+  outline-offset: -16px;
+}
+
+.stage canvas {
+  max-width: 100%;
+  max-height: 100%;
+  border: 1px solid var(--text);
+  cursor: pointer;
+  touch-action: none;
+}
+
+.stage canvas.picking {
+  cursor: crosshair;
+}
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+}
+
+.empty .glitch {
+  font-size: 36px;
+  line-height: 44px;
+}
+
+.empty .glitch span::before,
+.empty .glitch span::after {
+  background: var(--surface-track);
+}
+
+.toolbar {
+  position: absolute;
+  left: 24px;
+  right: 24px;
+  bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.toolbar .hint {
+  font-family: var(--mono);
+}
+
+.export {
+  display: flex;
+  gap: 8px;
+}
+
+.export select {
+  width: auto;
+  background: var(--surface);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glitch span::before,
+  .glitch span::after,
+  .status.busy::after,
+  .glowable.glowing {
+    animation: none;
+  }
+
+  .segmented::before,
+  .segmented button {
+    transition: none;
+  }
+}
+
+@media (max-width: 760px) {
+  #app {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(60dvh, 1fr);
+    height: auto;
+    min-height: 100dvh;
+  }
+
+  .panel {
+    border-right: 0;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .stage {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 16px;
+    padding: 16px;
+  }
+
+  .stage canvas {
+    max-height: 70dvh;
+  }
+
+  .toolbar {
+    position: static;
+    align-self: stretch;
+  }
+}
+
+.btn.filled.glowable:hover:not(:disabled),
+.btn.filled.glowable:focus-visible {
+  --glow: 1;
+  animation: glow-pulse 1200ms ease-in-out infinite alternate;
+}
+
+.credits {
+  display: flex;
+  gap: 16px;
+  font: 400 12px/16px var(--mono);
+}
+
+.credits a {
+  min-height: var(--min);
+  display: inline-flex;
+  align-items: center;
+  color: var(--primary-text);
+  text-underline-offset: 3px;
+}
+
+.credits a:hover {
+  color: var(--text);
+}
+
+.glowable:focus-visible {
+  outline: 2px solid var(--primary-text);
+  outline-offset: 2px;
+}
+
+.btn.filled.glowing:disabled {
+  background: var(--primary);
+  color: var(--on-primary);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn.filled.glowable:hover:not(:disabled),
+  .btn.filled.glowable:focus-visible {
+    animation: none;
+  }
+}
+
+/* Hover glitch (docs/conventions.md, expressive layer): a 150 ms jitter plus one torn slice. */
+
+.btn,
+.segmented button,
+.node-select,
+.node-remove,
+.insert,
+.drop {
+  position: relative;
+}
+
+.btn::after,
+.segmented button::after,
+.node-select::after,
+.node-remove::after,
+.insert::after,
+.drop::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: var(--primary);
+  clip-path: inset(100% 0 0 0);
+  pointer-events: none;
+}
+
+.insert::after {
+  inset: 12px;
+}
+
+.btn.filled::after,
+.segmented button[aria-pressed='true']::after {
+  background: var(--text);
+}
+
+.btn:hover:not(:disabled),
+.segmented button:hover,
+.node-select:hover,
+.node-remove:hover,
+.insert:hover,
+.drop:hover {
+  animation: hover-jitter 150ms steps(1, end);
+}
+
+.btn:hover:not(:disabled)::after,
+.segmented button:hover::after,
+.node-select:hover::after,
+.node-remove:hover::after,
+.insert:hover::after,
+.drop:hover::after {
+  animation: hover-slice 150ms steps(1, end);
+}
+
+.btn.filled.glowable:hover:not(:disabled) {
+  animation: hover-jitter 150ms steps(1, end), glow-pulse 1200ms ease-in-out infinite alternate;
+}
+
+.drop.glowing:hover {
+  animation: hover-jitter 150ms steps(1, end), glow-pulse 1200ms ease-in-out infinite alternate;
+}
+
+@keyframes hover-jitter {
+  0% {
+    transform: translate(2px, -1px);
+  }
+  25% {
+    transform: translate(-2px, 1px);
+  }
+  50% {
+    transform: translate(1px, 1px);
+  }
+  75% {
+    transform: translate(-1px, 0);
+  }
+  100% {
+    transform: none;
+  }
+}
+
+@keyframes hover-slice {
+  0% {
+    clip-path: inset(30% 0 55% 0);
+    transform: translateX(-4px);
+  }
+  25% {
+    clip-path: inset(65% 0 22% 0);
+    transform: translateX(3px);
+  }
+  50% {
+    clip-path: inset(12% 0 78% 0);
+    transform: translateX(-2px);
+  }
+  75% {
+    clip-path: inset(48% 0 42% 0);
+    transform: translateX(1px);
+  }
+  100% {
+    clip-path: inset(100% 0 0 0);
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn:hover:not(:disabled),
+  .segmented button:hover,
+  .node-select:hover,
+  .node-remove:hover,
+  .insert:hover,
+  .drop:hover,
+  .btn.filled.glowable:hover:not(:disabled),
+  .drop.glowing:hover,
+  .btn:hover::after,
+  .segmented button:hover::after,
+  .node-select:hover::after,
+  .node-remove:hover::after,
+  .insert:hover::after,
+  .drop:hover::after {
+    animation: none;
+  }
+}
