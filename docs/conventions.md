@@ -34,8 +34,8 @@ Follows `~/agent-skills/conventions/design.md`. **Light app.** Key colour `#E98C
 The glitch theme gets more voice than the CI default. Allowed here, nowhere else:
 
 - **Glitch type.** The wordmark (mono, weight 800, stacked) and the empty-state prompt split into
-  misregistered horizontal slices for ~300 ms every few seconds, in `primary` and `text` only — no extra
-  hues, no blur.
+  misregistered horizontal slices for ~300 ms every few seconds, in `primary` and `text` only — no extra hues,
+  no blur.
 - **Neon glow** (design.md geometry) on three things only: the Download button on hover, focus and while
   exporting; the selected pipeline step; a drop target while a file is dragged over it.
 - **Monospace for every readout**: slider values, step summaries, the status line. The status line reads like

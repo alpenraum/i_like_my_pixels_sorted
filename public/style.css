@@ -83,9 +83,43 @@ body {
 }
 
 #app {
+  position: relative;
   display: grid;
-  grid-template-columns: 340px minmax(0, 1fr);
+  grid-template-columns: var(--sidebar, max(280px, 40vw)) minmax(0, 1fr);
   height: 100dvh;
+}
+
+/* Sits over the panel's right border; absolutely positioned so it takes no grid cell. */
+.resizer {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(var(--sidebar, max(280px, 40vw)) - 6px);
+  z-index: 5;
+  width: 12px;
+  cursor: col-resize;
+  touch-action: none;
+}
+
+.resizer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 5px;
+  width: 2px;
+  background: transparent;
+  transition: background var(--motion);
+}
+
+.resizer:hover::before,
+.resizer.dragging::before {
+  background: var(--primary-text);
+}
+
+#app:has(.resizer.dragging) {
+  cursor: col-resize;
+  user-select: none;
 }
 
 button,
@@ -776,6 +810,10 @@ legend {
   .panel {
     border-right: 0;
     border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .resizer {
+    display: none;
   }
 
   .stage {

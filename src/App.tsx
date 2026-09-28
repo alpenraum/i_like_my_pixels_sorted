@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { Pipeline } from './components/Pipeline.tsx';
 import { Preview } from './components/Preview.tsx';
+import { SidebarResizer } from './components/SidebarResizer.tsx';
 import { StepControls, type StepPatch } from './components/StepControls.tsx';
 import { type LoadedImage, loadImage, releaseImage } from './images.ts';
 import { newStep, type Step, toSettings } from './pipeline.ts';
@@ -132,6 +133,7 @@ export function App() {
           <a href='https://github.com/alpenraum' target='_blank' rel='noopener'>GitHub</a>
         </footer>
       </aside>
+      <SidebarResizer />
       <Preview
         image={image}
         settings={settings}
