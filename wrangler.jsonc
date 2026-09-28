@@ -1,5 +1,5 @@
 {
-  "name": "pixel-sorter",
+  "name": "i-like-my-pixels-sorted",
   "compatibility_date": "2026-09-28",
   // Assets only, on purpose: with no "main" and no "run_worker_first", no Worker script ever runs, so
   // every request is a static-asset request — free and unlimited on the Free plan. tools/free-tier.ts
