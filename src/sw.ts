@@ -34,7 +34,9 @@ sw.addEventListener('fetch', (event) => {
   const { request } = event;
   if (request.method !== 'GET' || new URL(request.url).origin !== sw.location.origin) return;
   event.respondWith(
-    fetch(request)
+    // Without no-cache the browser's heuristic HTTP cache can answer and keep a stale build alive.
+    // Navigation requests can't be re-constructed with options; browsers revalidate those anyway.
+    fetch(request.mode === 'navigate' ? request : new Request(request, { cache: 'no-cache' }))
       .then((response) => {
         if (response.ok) {
           const copy = response.clone();

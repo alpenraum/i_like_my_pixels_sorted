@@ -27,7 +27,9 @@ if (dev) {
   Deno.serve({ port, hostname: '127.0.0.1' }, async (req) => {
     // public/ first: a `deno task build` run alongside dev leaves stale copies of it in dist/.
     const file = await serveDir(req, { fsRoot: 'public', quiet: true });
-    return file.status === 404 ? serveDir(req, { fsRoot: 'dist', quiet: true }) : file;
+    const res = file.status === 404 ? await serveDir(req, { fsRoot: 'dist', quiet: true }) : file;
+    res.headers.set('cache-control', 'no-cache');
+    return res;
   });
 } else {
   const results = await Promise.all(children.map((c) => c.status));

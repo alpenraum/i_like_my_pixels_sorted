@@ -86,6 +86,7 @@ body {
   position: relative;
   display: grid;
   grid-template-columns: var(--sidebar, max(280px, 40vw)) minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr);
   height: 100dvh;
 }
 
@@ -718,6 +719,9 @@ legend {
 .stage {
   position: relative;
   display: grid;
+  /* Definite tracks: without them the canvas's max-height: 100% has nothing to resolve against and a tall
+     image overflows the stage. */
+  grid-template: minmax(0, 1fr) / minmax(0, 1fr);
   place-items: center;
   min-height: 0;
   padding: 24px 24px 88px;
